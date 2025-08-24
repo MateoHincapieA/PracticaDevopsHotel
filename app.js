@@ -1,6 +1,7 @@
 const express = require('express');
-const app = express();
+const sequelize = require('./src/config/database');
 
+const app = express();
 app.use(express.json());
 
 // Ruta inicial
@@ -8,6 +9,12 @@ app.get('/', (req, res) => {
   res.send('API response');
 });
 
+// Sincronizar modelos con la base de datos
+sequelize.sync({ force: false })
+  .then(() => console.log("BD conectada"))
+  .catch(err => console.error("Error al conectar DB:", err));
+
+// Puerto desde .env
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
