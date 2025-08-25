@@ -1,4 +1,5 @@
 const { Reservation, Room } = require('../models');
+const { validationResult } = require("express-validator");
 
 const reservationController = {
   async getAll(req, res) {
@@ -11,6 +12,10 @@ const reservationController = {
   },
 
   async getById(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const reservation = await Reservation.findByPk(req.params.id, { include: Room });
       if (!reservation) return res.status(404).json({ error: 'Reservación no encontrada' });
@@ -21,6 +26,10 @@ const reservationController = {
   },
 
   async create(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const reservation = await Reservation.create(req.body);
       res.status(201).json(reservation);
@@ -30,6 +39,10 @@ const reservationController = {
   },
 
   async update(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const reservation = await Reservation.findByPk(req.params.id);
       if (!reservation) return res.status(404).json({ error: 'Reservación no encontrada' });
@@ -41,6 +54,10 @@ const reservationController = {
   },
 
   async delete(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const reservation = await Reservation.findByPk(req.params.id);
       if (!reservation) return res.status(404).json({ error: 'Reservación no encontrada' });

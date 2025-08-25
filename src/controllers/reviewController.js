@@ -1,4 +1,5 @@
 const { Review, Reservation } = require('../models');
+const { validationResult } = require("express-validator");
 
 const reviewController = {
   async getAll(req, res) {
@@ -11,6 +12,10 @@ const reviewController = {
   },
 
   async getById(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const review = await Review.findByPk(req.params.id, { include: Reservation });
       if (!review) return res.status(404).json({ error: 'Reseña no encontrada' });
@@ -21,6 +26,10 @@ const reviewController = {
   },
 
   async create(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const review = await Review.create(req.body);
       res.status(201).json(review);
@@ -30,6 +39,10 @@ const reviewController = {
   },
 
   async update(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const review = await Review.findByPk(req.params.id);
       if (!review) return res.status(404).json({ error: 'Reseña no encontrada' });
@@ -41,6 +54,10 @@ const reviewController = {
   },
 
   async delete(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const review = await Review.findByPk(req.params.id);
       if (!review) return res.status(404).json({ error: 'Reseña no encontrada' });

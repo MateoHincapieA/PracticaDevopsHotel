@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const reviewController = require("../controllers/reviewController");
+const reviewValidator = require("../validators/reviewValidator");
 
 // CRUD básico
-router.post("/", reviewController.create);
+router.post("/", reviewValidator.create, reviewController.create);
 router.get("/", reviewController.getAll);
-router.get("/:id", reviewController.getById);
-router.put("/:id", reviewController.update);
-router.delete("/:id", reviewController.delete);
+router.get("/:id", reviewValidator.idValidation, reviewController.getById);
+router.put("/:id", [reviewValidator.idValidation, reviewValidator.update], reviewController.update);
+router.delete("/:id", reviewValidator.idValidation, reviewController.delete);
 
 module.exports = router;
