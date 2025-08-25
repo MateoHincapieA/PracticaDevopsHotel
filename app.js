@@ -1,5 +1,8 @@
 const express = require('express');
 const sequelize = require('./src/config/database');
+const roomRoutes = require("./src/routes/roomRoutes");
+const reservationRoutes = require("./src/routes/reservationRoutes");
+const reviewRoutes = require("./src/routes/reviewRoutes");
 
 const app = express();
 app.use(express.json());
@@ -8,6 +11,11 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('API response');
 });
+
+//rutas entidades
+app.use("/api/rooms", roomRoutes);
+app.use("/api/reservations", reservationRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Sincronizar modelos con la base de datos
 sequelize.sync({ force: false })
