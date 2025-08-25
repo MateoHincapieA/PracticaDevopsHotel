@@ -1,9 +1,9 @@
-const { Review, Room } = require('../models');
+const { Review, Reservation } = require('../models');
 
 const reviewController = {
   async getAll(req, res) {
     try {
-      const reviews = await Review.findAll({ include: Room });
+      const reviews = await Review.findAll({ include: Reservation });
       res.json(reviews);
     } catch (error) {
       res.status(500).json({ error: 'Error al obtener las reseñas' });
@@ -12,7 +12,7 @@ const reviewController = {
 
   async getById(req, res) {
     try {
-      const review = await Review.findByPk(req.params.id, { include: Room });
+      const review = await Review.findByPk(req.params.id, { include: Reservation });
       if (!review) return res.status(404).json({ error: 'Reseña no encontrada' });
       res.json(review);
     } catch (error) {

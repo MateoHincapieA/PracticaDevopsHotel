@@ -1,3 +1,5 @@
+const { sequelize } = require("sequelize");
+
 const Room = require("./room");
 const Reservation = require("./reservation");
 const Review = require("./review");
