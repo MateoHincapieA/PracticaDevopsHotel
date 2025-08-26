@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "jest --coverage"
+    "test": "set NODE_ENV=test&& jest --coverage"
   },
   "keywords": [],
   "author": "Mateo Hincapié",
@@ -15,6 +15,7 @@
     "jest": "^30.0.5",
     "nodemon": "^3.1.10",
     "sequelize-cli": "^6.6.3",
+    "sqlite3": "^5.1.7",
     "supertest": "^7.1.4"
   },
   "dependencies": {

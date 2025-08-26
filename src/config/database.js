@@ -8,7 +8,8 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: "postgres",
+    dialect: process.env.NODE_ENV === "test" ? "sqlite" : "postgres", // o postgres
+    storage: process.env.NODE_ENV === "test" ? ":memory:" : undefined,
     logging: false,
   }
 );
