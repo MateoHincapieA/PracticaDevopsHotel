@@ -23,7 +23,7 @@ jobs:
       - name: Run tests with coverage (min 60%)
         run: |
           npx jest --coverage
-          
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -35,4 +35,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ghcr.io/MateoHincapieA/PracticaDevopsHotel:latest
+          tags: ghcr.io/mateohincapiea/practicadevopshotel:latest
