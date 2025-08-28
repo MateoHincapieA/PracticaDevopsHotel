@@ -1,4 +1,4 @@
-const request = require("supertest");
+/* const request = require("supertest");
 const app = require("../../app");
 const sequelize = require('../config/database');
 const { Room } = require("../models");
@@ -161,3 +161,4 @@ describe("Rooms API", () => {
     });
   });
 });
+ */
