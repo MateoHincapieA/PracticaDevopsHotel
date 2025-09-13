@@ -160,5 +160,45 @@ describe("Rooms API", () => {
       expect(res.body.error).toBe("Habitación no encontrada");
     });
   });
+
+  describe("PATCH /api/rooms/:id", () => {
+    it("debe actualizar parcialmente una habitación existente", async () => {
+      const room = await Room.create({ number: "301", type: "single", price: 200 });
+
+      const res = await request(app)
+        .patch(`/api/rooms/${room.id}`)
+        .send({ price: 250 });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.price).toBe(250);
+      expect(res.body.number).toBe("301");
+    });
+
+    it("debe devolver error con ID inválido", async () => {
+      const res = await request(app).patch("/api/rooms/xyz").send({ price: 150 });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errors[0].msg).toBe("ID inválido");
+    });
+
+    it("debe devolver 404 si la habitación no existe", async () => {
+      const res = await request(app).patch("/api/rooms/9999").send({ price: 150 });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.error).toBe("Habitación no encontrada");
+    });
+
+    it("no debe permitir precio negativo", async () => {
+      const room = await Room.create({ number: "302", type: "double", price: 100 });
+
+      const res = await request(app)
+        .patch(`/api/rooms/${room.id}`)
+        .send({ price: -50 });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errors[0].msg).toBe("Precio debe ser mayor o igual a 0");
+    });
+  });
+
 });
 

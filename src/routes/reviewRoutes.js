@@ -9,5 +9,6 @@ router.get("/", reviewController.getAll);
 router.get("/:id", reviewValidator.idValidation, reviewController.getById);
 router.put("/:id", [reviewValidator.idValidation, reviewValidator.update], reviewController.update);
 router.delete("/:id", reviewValidator.idValidation, reviewController.delete);
+router.patch("/:id", [reviewValidator.idValidation, reviewValidator.update], reviewController.partialUpdate);
 
 module.exports = router;

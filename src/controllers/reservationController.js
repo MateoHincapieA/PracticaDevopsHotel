@@ -66,6 +66,22 @@ const reservationController = {
     } catch (error) {
       res.status(500).json({ error: 'Error al eliminar la reservación' });
     }
+  },
+
+  async partialUpdate(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      const reservation = await Reservation.findByPk(req.params.id);
+      if (!reservation) return res.status(404).json({ error: 'Reservación no encontrada' });
+
+      await reservation.update(req.body, { fields: Object.keys(req.body) });
+      res.json(reservation);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al actualizar parcialmente la Reservación' });
+    }
   }
 };
 

@@ -67,7 +67,24 @@ const roomController = {
     } catch (error) {
       res.status(500).json({ error: 'Error al eliminar la habitación' });
     }
+  },
+
+  async partialUpdate(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      const room = await Room.findByPk(req.params.id);
+      if (!room) return res.status(404).json({ error: 'Habitación no encontrada' });
+
+      await room.update(req.body, { fields: Object.keys(req.body) });
+      res.json(room);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al actualizar parcialmente la habitación' });
+    }
   }
+
 };
 
 module.exports = roomController;
