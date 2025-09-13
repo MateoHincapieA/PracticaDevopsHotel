@@ -166,4 +166,45 @@ describe("Reviews API", () => {
       expect(res.body.errors[0].msg).toBe("ID inválido");
     });
   });
+
+  describe("PATCH /api/reviews/:id", () => {
+    it("debe actualizar solo el comentario de una reseña", async () => {
+      const review = await Review.create({
+        rating: 3,
+        comment: "Regular",
+        reservationId: reservation.id,
+      });
+
+      const res = await request(app)
+        .patch(`/api/reviews/${review.id}`)
+        .send({ comment: "Mejoró bastante" });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.comment).toBe("Mejoró bastante");
+      expect(res.body.rating).toBe(3);
+    });
+
+    it("no debe aceptar rating fuera de rango", async () => {
+      const review = await Review.create({
+        rating: 4,
+        comment: "Bien",
+        reservationId: reservation.id,
+      });
+
+      const res = await request(app)
+        .patch(`/api/reviews/${review.id}`)
+        .send({ rating: 10 });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errors[0].msg).toBe("La calificación debe ser un número entre 1 y 5");
+    });
+
+    it("debe devolver 404 si la reseña no existe", async () => {
+      const res = await request(app).patch("/api/reviews/9999").send({ comment: "X" });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.error).toBe("Reseña no encontrada");
+    });
+  });
+
 });

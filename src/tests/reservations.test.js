@@ -150,4 +150,39 @@ describe("Reservations API", () => {
       expect(res.body.errors[0].msg).toBe("ID inválido");
     });
   });
+
+  describe("PATCH /api/reservations/:id", () => {
+    it("debería actualizar parcialmente el estado", async () => {
+      const res = await request(app)
+        .patch(`/api/reservations/${reservation.id}`)
+        .send({ status: "cancelled" });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.status).toBe("cancelled");
+    });
+
+    it("debería retornar error si checkOut <= checkIn", async () => {
+      const res = await request(app)
+        .patch(`/api/reservations/${reservation.id}`)
+        .send({ checkIn: "2025-09-10", checkOut: "2025-09-09" });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errors[0].msg).toBe("La fecha de check-out debe ser posterior al check-in");
+    });
+
+    it("debería retornar 404 si no existe", async () => {
+      const res = await request(app).patch("/api/reservations/9999").send({ status: "confirmed" });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.error).toBe("Reservación no encontrada");
+    });
+
+    it("debería retornar 400 si el ID no es válido", async () => {
+      const res = await request(app).patch("/api/reservations/abc").send({ status: "confirmed" });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errors[0].msg).toBe("ID inválido");
+    });
+  });
+
 });

@@ -66,6 +66,22 @@ const reviewController = {
     } catch (error) {
       res.status(500).json({ error: 'Error al eliminar la reseña' });
     }
+  },
+
+  async partialUpdate(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      const review = await Review.findByPk(req.params.id);
+      if (!review) return res.status(404).json({ error: 'Reseña no encontrada' });
+
+      await review.update(req.body, { fields: Object.keys(req.body) });
+      res.json(review);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al actualizar parcialmente la Reseña' });
+    }
   }
 };
 
