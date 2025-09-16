@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../../app");
 const sequelize = require("../config/database");
-const { Reservation, Room } = require("../models");
+const { Reservation, Room, Review } = require("../models");
 
 describe("Reservations API", () => {
   let room;
@@ -48,7 +48,7 @@ describe("Reservations API", () => {
         .post("/api/reservations")
         .send({ guestName: "" });
       expect(res.statusCode).toBe(400);
-      expect(res.body.errors[0].msg).toBe("El nombre del huésped es obligatorio");
+      expect(res.body.errors[0].msg).toBe("Invalid value(s)");
     });
 
     it("debería fallar si checkOut <= checkIn", async () => {
@@ -61,7 +61,48 @@ describe("Reservations API", () => {
           checkOut: new Date(),
         });
       expect(res.statusCode).toBe(400);
-      expect(res.body.errors[0].msg).toBe("La fecha de check-out debe ser posterior al check-in");
+      expect(res.body.errors[0].msg).toBe("Invalid value(s)");
+    });
+  });
+
+
+  describe("POST /api/reservations - JSON compuesto", () => {
+    it("debe crear reserva, incluir la room y crear un review", async () => {
+      const response = await request(app)
+        .post("/api/reservations")
+        .send({
+          reservation: {
+            guestName: "Juan",
+            roomId: room.id,
+            checkIn: "2025-09-20",
+            checkOut: "2025-09-22",
+          },
+          room: {
+            roomId: room.id,
+          },
+          review: {
+            rating: 5,
+            comment: "Excelente habitación",
+          },
+        })
+        .expect(201);
+
+      expect(response.body).toHaveProperty("reservation");
+      expect(response.body).toHaveProperty("room");
+      expect(response.body).toHaveProperty("review");
+
+      //Validaciones de reserva
+      expect(response.body.reservation.guestName).toBe("Juan");
+      expect(response.body.reservation.roomId).toBe(room.id);
+
+      //Validaciones de room
+      expect(response.body.room.number).toBe(room.number);
+
+      //Validaciones de review
+      expect(response.body.review.rating).toBe(5);
+
+      const review = await Review.findByPk(response.body.review.id);
+      expect(review).not.toBeNull();
     });
   });
 

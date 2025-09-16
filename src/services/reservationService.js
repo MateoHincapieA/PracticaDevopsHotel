@@ -28,7 +28,7 @@ const reservationService = {
         review: createdReview,
       };
     } catch (error) {
-      console.error("Error en createReservationWithExtras:", error.message);
+      console.error("Error en createReservation:", error.message);
       throw error;
     }
   },
