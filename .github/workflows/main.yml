@@ -1,26 +1,30 @@
-name: Main Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
+      - develop
   pull_request:
-      branches:
-        - main
-        
+    branches:
+      - main
+      - develop
+
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
-  test-and-build:
+  test-build-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # necesario para semantic-release
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.9.0
 
@@ -36,9 +40,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-    
-      - name: Build and push
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           push: true
           tags: ghcr.io/mateohincapiea/practicadevopshotel:latest
+
+      - name: Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
