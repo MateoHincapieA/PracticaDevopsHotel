@@ -26,10 +26,10 @@ describe("Reviews API", () => {
     await sequelize.close();
   });
 
-  describe("POST /api/reviews", () => {
+  describe("POST /api/v2/reviews", () => {
     it("debe crear una reseña válida", async () => {
       const res = await request(app)
-        .post("/api/reviews")
+        .post("/api/v2/reviews")
         .send({ rating: 5, comment: "Excelente servicio", reservationId: reservation.id });
 
       expect(res.statusCode).toBe(201);
@@ -39,7 +39,7 @@ describe("Reviews API", () => {
 
     it("no debe crear reseña sin rating", async () => {
       const res = await request(app)
-        .post("/api/reviews")
+        .post("/api/v2/reviews")
         .send({ comment: "Faltó calificación", reservationId: reservation.id });
 
       expect(res.statusCode).toBe(400);
@@ -48,7 +48,7 @@ describe("Reviews API", () => {
 
     it("no debe crear reseña con rating inválido", async () => {
       const res = await request(app)
-        .post("/api/reviews")
+        .post("/api/v2/reviews")
         .send({ rating: 10, reservationId: reservation.id });
 
       expect(res.statusCode).toBe(400);
@@ -57,7 +57,7 @@ describe("Reviews API", () => {
 
     it("no debe crear reseña sin reservationId", async () => {
       const res = await request(app)
-        .post("/api/reviews")
+        .post("/api/v2/reviews")
         .send({ rating: 3, comment: "Sin reserva" });
 
       expect(res.statusCode).toBe(400);
@@ -65,15 +65,15 @@ describe("Reviews API", () => {
     });
   });
 
-  describe("GET /api/reviews", () => {
+  describe("GET /api/v2/reviews", () => {
     it("debe obtener todas las reseñas", async () => {
-      const res = await request(app).get("/api/reviews");
+      const res = await request(app).get("/api/v2/reviews");
       expect(res.statusCode).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
     });
   });
 
-  describe("GET /api/reviews/:id", () => {
+  describe("GET /api/v2/reviews/:id", () => {
     it("debe obtener una reseña por ID", async () => {
       const review = await Review.create({
         rating: 4,
@@ -81,25 +81,25 @@ describe("Reviews API", () => {
         reservationId: reservation.id,
       });
 
-      const res = await request(app).get(`/api/reviews/${review.id}`);
+      const res = await request(app).get(`/api/v2/reviews/${review.id}`);
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("id", review.id);
     });
 
     it("debe devolver error si ID no es válido", async () => {
-      const res = await request(app).get("/api/reviews/abc");
+      const res = await request(app).get("/api/v2/reviews/abc");
       expect(res.statusCode).toBe(400);
       expect(res.body.errors[0].msg).toBe("ID inválido");
     });
 
     it("debe devolver 404 si la reseña no existe", async () => {
-      const res = await request(app).get("/api/reviews/9999");
+      const res = await request(app).get("/api/v2/reviews/9999");
       expect(res.statusCode).toBe(404);
       expect(res.body.error).toBe("Reseña no encontrada");
     });
   });
 
-  describe("PUT /api/reviews/:id", () => {
+  describe("PUT /api/v2/reviews/:id", () => {
     it("debe actualizar una reseña existente", async () => {
       const review = await Review.create({
         rating: 2,
@@ -108,7 +108,7 @@ describe("Reviews API", () => {
       });
 
       const res = await request(app)
-        .put(`/api/reviews/${review.id}`)
+        .put(`/api/v2/reviews/${review.id}`)
         .send({ rating: 4, comment: "Mejoró la atención" });
 
       expect(res.statusCode).toBe(200);
@@ -124,7 +124,7 @@ describe("Reviews API", () => {
       });
 
       const res = await request(app)
-        .put(`/api/reviews/${review.id}`)
+        .put(`/api/v2/reviews/${review.id}`)
         .send({ rating: 0 });
 
       expect(res.statusCode).toBe(400);
@@ -133,7 +133,7 @@ describe("Reviews API", () => {
 
     it("debe devolver 404 al intentar actualizar reseña inexistente", async () => {
       const res = await request(app)
-        .put("/api/reviews/9999")
+        .put("/api/v2/reviews/9999")
         .send({ rating: 3 });
 
       expect(res.statusCode).toBe(404);
@@ -141,7 +141,7 @@ describe("Reviews API", () => {
     });
   });
 
-  describe("DELETE /api/reviews/:id", () => {
+  describe("DELETE /api/v2/reviews/:id", () => {
     it("debe eliminar una reseña existente", async () => {
       const review = await Review.create({
         rating: 1,
@@ -149,25 +149,25 @@ describe("Reviews API", () => {
         reservationId: reservation.id,
       });
 
-      const res = await request(app).delete(`/api/reviews/${review.id}`);
+      const res = await request(app).delete(`/api/v2/reviews/${review.id}`);
       expect(res.statusCode).toBe(200);
       expect(res.body.message).toBe("Reseña eliminada");
     });
 
     it("debe devolver 404 al intentar eliminar reseña inexistente", async () => {
-      const res = await request(app).delete("/api/reviews/9999");
+      const res = await request(app).delete("/api/v2/reviews/9999");
       expect(res.statusCode).toBe(404);
       expect(res.body.error).toBe("Reseña no encontrada");
     });
 
     it("debe devolver error si ID no es válido", async () => {
-      const res = await request(app).delete("/api/reviews/abc");
+      const res = await request(app).delete("/api/v2/reviews/abc");
       expect(res.statusCode).toBe(400);
       expect(res.body.errors[0].msg).toBe("ID inválido");
     });
   });
 
-  describe("PATCH /api/reviews/:id", () => {
+  describe("PATCH /api/v2/reviews/:id", () => {
     it("debe actualizar solo el comentario de una reseña", async () => {
       const review = await Review.create({
         rating: 3,
@@ -176,7 +176,7 @@ describe("Reviews API", () => {
       });
 
       const res = await request(app)
-        .patch(`/api/reviews/${review.id}`)
+        .patch(`/api/v2/reviews/${review.id}`)
         .send({ comment: "Mejoró bastante" });
 
       expect(res.statusCode).toBe(200);
@@ -192,7 +192,7 @@ describe("Reviews API", () => {
       });
 
       const res = await request(app)
-        .patch(`/api/reviews/${review.id}`)
+        .patch(`/api/v2/reviews/${review.id}`)
         .send({ rating: 10 });
 
       expect(res.statusCode).toBe(400);
@@ -200,7 +200,7 @@ describe("Reviews API", () => {
     });
 
     it("debe devolver 404 si la reseña no existe", async () => {
-      const res = await request(app).patch("/api/reviews/9999").send({ comment: "X" });
+      const res = await request(app).patch("/api/v2/reviews/9999").send({ comment: "X" });
 
       expect(res.statusCode).toBe(404);
       expect(res.body.error).toBe("Reseña no encontrada");

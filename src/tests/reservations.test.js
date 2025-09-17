@@ -27,10 +27,10 @@ describe("Reservations API", () => {
     await sequelize.close();
   });
 
-  describe("POST /api/reservations", () => {
+  describe("POST /api/v2/reservations", () => {
     it("debería crear una reservación válida", async () => {
       const res = await request(app)
-        .post("/api/reservations")
+        .post("/api/v2/reservations")
         .send({
           guestName: "Jane Doe",
           status: "confirmed",
@@ -45,7 +45,7 @@ describe("Reservations API", () => {
 
     it("debería fallar si faltan campos obligatorios", async () => {
       const res = await request(app)
-        .post("/api/reservations")
+        .post("/api/v2/reservations")
         .send({ guestName: "" });
       expect(res.statusCode).toBe(400);
       expect(res.body.errors[0].msg).toBe("Invalid value(s)");
@@ -53,7 +53,7 @@ describe("Reservations API", () => {
 
     it("debería fallar si checkOut <= checkIn", async () => {
       const res = await request(app)
-        .post("/api/reservations")
+        .post("/api/v2/reservations")
         .send({
           guestName: "Invalid Date",
           roomId: room.id,
@@ -66,10 +66,10 @@ describe("Reservations API", () => {
   });
 
 
-  describe("POST /api/reservations - JSON compuesto", () => {
+  describe("POST /api/v2/reservations - JSON compuesto", () => {
     it("debe crear reserva, incluir la room y crear un review", async () => {
       const response = await request(app)
-        .post("/api/reservations")
+        .post("/api/v2/reservations")
         .send({
           reservation: {
             guestName: "Juan",
@@ -106,39 +106,39 @@ describe("Reservations API", () => {
     });
   });
 
-  describe("GET /api/reservations", () => {
+  describe("GET /api/v2/reservations", () => {
     it("debería retornar todas las reservaciones", async () => {
-      const res = await request(app).get("/api/reservations");
+      const res = await request(app).get("/api/v2/reservations");
       expect(res.statusCode).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
       expect(res.body.length).toBeGreaterThan(0);
     });
   });
 
-  describe("GET /api/reservations/:id", () => {
+  describe("GET /api/v2/reservations/:id", () => {
     it("debería retornar una reservación existente", async () => {
-      const res = await request(app).get(`/api/reservations/${reservation.id}`);
+      const res = await request(app).get(`/api/v2/reservations/${reservation.id}`);
       expect(res.statusCode).toBe(200);
       expect(res.body.guestName).toBe("Juan Pérez");
     });
 
     it("debería retornar 404 si no existe", async () => {
-      const res = await request(app).get("/api/reservations/9999");
+      const res = await request(app).get("/api/v2/reservations/9999");
       expect(res.statusCode).toBe(404);
       expect(res.body.error).toBe("Reservación no encontrada");
     });
 
     it("debería retornar 400 si el ID no es válido", async () => {
-      const res = await request(app).get("/api/reservations/abc");
+      const res = await request(app).get("/api/v2/reservations/abc");
       expect(res.statusCode).toBe(400);
       expect(res.body.errors[0].msg).toBe("ID inválido");
     });
   });
 
-  describe("PUT /api/reservations/:id", () => {
+  describe("PUT /api/v2/reservations/:id", () => {
     it("debería actualizar una reservación existente", async () => {
       const res = await request(app)
-        .put(`/api/reservations/${reservation.id}`)
+        .put(`/api/v2/reservations/${reservation.id}`)
         .send({ status: "confirmed" });
       expect(res.statusCode).toBe(200);
       expect(res.body.status).toBe("confirmed");
@@ -146,7 +146,7 @@ describe("Reservations API", () => {
 
     it("debería retornar 404 si no existe", async () => {
       const res = await request(app)
-        .put("/api/reservations/9999")
+        .put("/api/v2/reservations/9999")
         .send({ status: "cancelled" });
       expect(res.statusCode).toBe(404);
       expect(res.body.error).toBe("Reservación no encontrada");
@@ -154,7 +154,7 @@ describe("Reservations API", () => {
 
     it("debería fallar si checkOut <= checkIn", async () => {
       const res = await request(app)
-        .put(`/api/reservations/${reservation.id}`)
+        .put(`/api/v2/reservations/${reservation.id}`)
         .send({
           checkIn: "2025-09-10",
           checkOut: "2025-09-09",
@@ -164,7 +164,7 @@ describe("Reservations API", () => {
     });
   });
 
-  describe("DELETE /api/reservations/:id", () => {
+  describe("DELETE /api/v2/reservations/:id", () => {
     it("debería eliminar una reservación existente", async () => {
       const newReservation = await Reservation.create({
         guestName: "To Delete",
@@ -174,28 +174,28 @@ describe("Reservations API", () => {
         checkOut: "2025-09-17",
       });
 
-      const res = await request(app).delete(`/api/reservations/${newReservation.id}`);
+      const res = await request(app).delete(`/api/v2/reservations/${newReservation.id}`);
       expect(res.statusCode).toBe(200);
       expect(res.body.message).toBe("Reservación eliminada");
     });
 
     it("debería retornar 404 si no existe", async () => {
-      const res = await request(app).delete("/api/reservations/9999");
+      const res = await request(app).delete("/api/v2/reservations/9999");
       expect(res.statusCode).toBe(404);
       expect(res.body.error).toBe("Reservación no encontrada");
     });
 
     it("debería retornar 400 si el ID no es válido", async () => {
-      const res = await request(app).delete("/api/reservations/abc");
+      const res = await request(app).delete("/api/v2/reservations/abc");
       expect(res.statusCode).toBe(400);
       expect(res.body.errors[0].msg).toBe("ID inválido");
     });
   });
 
-  describe("PATCH /api/reservations/:id", () => {
+  describe("PATCH /api/v2/reservations/:id", () => {
     it("debería actualizar parcialmente el estado", async () => {
       const res = await request(app)
-        .patch(`/api/reservations/${reservation.id}`)
+        .patch(`/api/v2/reservations/${reservation.id}`)
         .send({ status: "cancelled" });
 
       expect(res.statusCode).toBe(200);
@@ -204,7 +204,7 @@ describe("Reservations API", () => {
 
     it("debería retornar error si checkOut <= checkIn", async () => {
       const res = await request(app)
-        .patch(`/api/reservations/${reservation.id}`)
+        .patch(`/api/v2/reservations/${reservation.id}`)
         .send({ checkIn: "2025-09-10", checkOut: "2025-09-09" });
 
       expect(res.statusCode).toBe(400);
@@ -212,14 +212,14 @@ describe("Reservations API", () => {
     });
 
     it("debería retornar 404 si no existe", async () => {
-      const res = await request(app).patch("/api/reservations/9999").send({ status: "confirmed" });
+      const res = await request(app).patch("/api/v2/reservations/9999").send({ status: "confirmed" });
 
       expect(res.statusCode).toBe(404);
       expect(res.body.error).toBe("Reservación no encontrada");
     });
 
     it("debería retornar 400 si el ID no es válido", async () => {
-      const res = await request(app).patch("/api/reservations/abc").send({ status: "confirmed" });
+      const res = await request(app).patch("/api/v2/reservations/abc").send({ status: "confirmed" });
 
       expect(res.statusCode).toBe(400);
       expect(res.body.errors[0].msg).toBe("ID inválido");
