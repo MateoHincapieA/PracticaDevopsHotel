@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 });
 
 //rutas entidades
-app.use("/api", routes);
+app.use("/api/v2", routes);
 
 // Sincronizar modelos con la base de datos
 sequelize.sync({ force: false })
