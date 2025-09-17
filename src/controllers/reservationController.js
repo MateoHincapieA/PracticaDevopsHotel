@@ -30,7 +30,7 @@ const reservationController = {
   async create(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      logError(`Error en POST /reservations: ${error.message}`);
+      logError(`Error en POST /reservations: ${errors.array()}`);
       return res.status(400).json({ errors: errors.array() });
     }
     try {
