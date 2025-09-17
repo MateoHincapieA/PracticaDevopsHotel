@@ -1,5 +1,17 @@
 # Changelog
 
+# [1.2.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v1.1.0...v1.2.0) (2025-09-17)
+
+
+### Bug Fixes
+
+* ruta en los test ([432d9f1](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/432d9f1ca93565720951e1385c19c9363b19feaa))
+
+
+### Features
+
+* preparando axios ([a17f5f6](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/a17f5f67a1e93bb6d524dff648803316b36843bc))
+
 # [1.1.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v1.0.0...v1.1.0) (2025-09-17)
 
 
