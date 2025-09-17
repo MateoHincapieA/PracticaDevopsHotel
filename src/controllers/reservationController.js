@@ -2,6 +2,7 @@ const { Reservation, Room } = require('../models');
 const { validationResult } = require("express-validator");
 const reservationService = require("../services/reservationService");
 const { logMessage, logError } = require('../../logging');
+const { Storage } = require('@google-cloud/storage');
 
 const reservationController = {
   async getAll(req, res) {
@@ -33,26 +34,39 @@ const reservationController = {
       logError(`Error en POST /reservations: ${errors.array()}`);
       return res.status(400).json({ errors: errors.array() });
     }
+    const storage = new Storage();
+    const bucketName = process.env.CLOUD_STORAGE_BUCKET;
+    if (!bucketName) {
+      console.error("CLOUD_STORAGE_BUCKET no está definido. La subida de archivos no funcionará.");
+    }
     try {
       logMessage('Petición POST recibida en /reservations');
       let reservationData;
 
-      // Caso 1: JSON normal
+      // Lógica para determinar el tipo de reserva
       if (req.body.guestName && req.body.roomId) {
         reservationData = await Reservation.create(req.body);
-        logMessage(`Datos procesados /reservations: ${JSON.stringify(reservationData)}`);
-        return res.status(201).json(reservationData);
-      }
-
-      // Caso 2: JSON con reservation + room
-      if (req.body.reservation && req.body.room && req.body.review) {
+      } else if (req.body.reservation && req.body.room && req.body.review) {
         reservationData = await reservationService.createReservation(req.body);
-        logMessage(`Datos procesados /reservations: ${JSON.stringify(reservationData)}`);
-        return res.status(201).json(reservationData);
+      } else {
+        return res.status(400).json({ error: "Formato de JSON inválido" });
       }
 
-      // Si no cumple ninguna estructura
-      return res.status(400).json({ error: "Formato de JSON inválido" });
+      // Lógica para guardar en Cloud Storage
+      if (bucketName) {
+        const fileName = `reservation-${reservationData.id || Date.now()}.json`;
+        const file = storage.bucket(bucketName).file(fileName);
+        const fileContent = JSON.stringify(reservationData, null, 2);
+
+        await file.save(fileContent, {
+          contentType: 'application/json'
+        });
+        logMessage(`Respuesta de reserva guardada en Cloud Storage: ${fileName}`);
+      }
+
+      // Devolver la respuesta al cliente
+      return res.status(201).json(reservationData);
+
     } catch (error) {
       logError(`Error en POST /reservations: ${error}`);
       console.error("Error al crear la reserva:", error);
