@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.0.0...v2.0.1) (2025-09-17)
+
+
+### Bug Fixes
+
+* logging en app ([959df8d](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/959df8df10414adaff01a18961e38a4e1c916e38))
+* mensaje en logError ([80e7af4](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/80e7af49106b8821b76014fbe2c28d9e0d3a80a1))
+
 # [1.2.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v1.1.0...v1.2.0) (2025-09-17)
 
 
