@@ -1,5 +1,20 @@
 # Changelog
 
+# [1.1.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v1.0.0...v1.1.0) (2025-09-17)
+
+
+### Bug Fixes
+
+* releaser develop ([e0cdf4c](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/e0cdf4c4a7448e3f6a371b4c6d282448b9fa409b))
+* versionado ([f0ae3ba](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/f0ae3ba7c981dcf7bf64c0778b5e999fe6c90974))
+
+
+### Features
+
+* actualizacion validator y controller para uso del servicio ([dee438d](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/dee438d77a7ff5f90b153a2b4ec41c9bdf3f186d))
+* servicio unificando peticiones a las tres entidades ([6119d54](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/6119d5463ec9550e702b8a8e61610906cdf01386))
+* versionado automatico ([26c921d](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/26c921d3b0f3d09940706963270a2eec505132c1))
+
 # 1.0.0-beta.1 (2025-09-17)
 
 
