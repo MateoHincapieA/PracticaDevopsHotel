@@ -1,5 +1,6 @@
 const { Reservation, Room } = require('../models');
 const { validationResult } = require("express-validator");
+const reservationService = require("../services/reservationService");
 
 const reservationController = {
   async getAll(req, res) {
@@ -31,9 +32,24 @@ const reservationController = {
       return res.status(400).json({ errors: errors.array() });
     }
     try {
-      const reservation = await Reservation.create(req.body);
-      res.status(201).json(reservation);
+      let reservationData;
+
+      // Caso 1: JSON normal
+      if (req.body.guestName && req.body.roomId) {
+        reservationData = await Reservation.create(req.body);
+        return res.status(201).json(reservationData);
+      }
+
+      // Caso 2: JSON con reservation + room
+      if (req.body.reservation && req.body.room && req.body.review) {
+        reservationData = await reservationService.createReservation(req.body);
+        return res.status(201).json(reservationData);
+      }
+
+      // Si no cumple ninguna estructura
+      return res.status(400).json({ error: "Formato de JSON inválido" });
     } catch (error) {
+      console.error("Error al crear la reserva:", error);
       res.status(500).json({ error: 'Error al crear la reservación' });
     }
   },
