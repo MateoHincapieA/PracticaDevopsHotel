@@ -10,6 +10,7 @@ app.get('/', (req, res) => {
   res.send('API response');
 });
 
+
 //rutas entidades
 app.use("/api/v2", routes);
 
