@@ -1,7 +1,7 @@
 const express = require('express');
 const sequelize = require('./src/config/database');
 const routes = require("./src/routes");
-const { logMessage, logError } = require('../../logging');
+const { logMessage, logError } = require('./logging');
 
 const app = express();
 app.use(express.json());
