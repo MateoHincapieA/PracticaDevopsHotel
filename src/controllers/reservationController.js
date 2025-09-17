@@ -1,6 +1,7 @@
 const { Reservation, Room } = require('../models');
 const { validationResult } = require("express-validator");
 const reservationService = require("../services/reservationService");
+const { logMessage, logError } = require('../../logging');
 
 const reservationController = {
   async getAll(req, res) {
@@ -29,26 +30,31 @@ const reservationController = {
   async create(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      logError(`Error en POST /reservations: ${error.message}`);
       return res.status(400).json({ errors: errors.array() });
     }
     try {
+      logMessage('Petición POST recibida en /reservations');
       let reservationData;
 
       // Caso 1: JSON normal
       if (req.body.guestName && req.body.roomId) {
         reservationData = await Reservation.create(req.body);
+        logMessage(`Datos procesados /reservations: ${JSON.stringify(reservationData)}`);
         return res.status(201).json(reservationData);
       }
 
       // Caso 2: JSON con reservation + room
       if (req.body.reservation && req.body.room && req.body.review) {
         reservationData = await reservationService.createReservation(req.body);
+        logMessage(`Datos procesados /reservations: ${JSON.stringify(reservationData)}`);
         return res.status(201).json(reservationData);
       }
 
       // Si no cumple ninguna estructura
       return res.status(400).json({ error: "Formato de JSON inválido" });
     } catch (error) {
+      logError(`Error en POST /reservations: ${error}`);
       console.error("Error al crear la reserva:", error);
       res.status(500).json({ error: 'Error al crear la reservación' });
     }
