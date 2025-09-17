@@ -1,4 +1,5 @@
 const { Reservation, Room, Review } = require("../models");
+const axios = require("axios");
 
 const reservationService = {
   async createReservation(data) {
@@ -22,10 +23,18 @@ const reservationService = {
         createdReview = await Review.create(reviewPayload);
       }
 
+      /* const compraResponse = await axios.post(
+        "http://localhost:3000/compras",
+        data
+      );
+
+      const createdCompra = compraResponse.data; */
+
       return {
         reservation: createdReservation,
         room: roomData,
         review: createdReview,
+        //compra: createdCompra
       };
     } catch (error) {
       console.error("Error en createReservation:", error.message);
