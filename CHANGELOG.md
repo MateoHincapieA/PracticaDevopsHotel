@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.2.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.1.0...v2.2.0) (2025-09-18)
+
+
+### Features
+
+* llamado api compra ([c46e828](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/c46e828218cf2ecfa54f0f4683e1b115bb78ea1a))
+
 # [2.1.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.0.1...v2.1.0) (2025-09-17)
 
 
