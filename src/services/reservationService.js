@@ -23,18 +23,18 @@ const reservationService = {
         createdReview = await Review.create(reviewPayload);
       }
 
-      /* const compraResponse = await axios.post(
-        "http://localhost:3000/compras",
+      const compraResponse = await axios.post(
+        "https://demo-276672580331.us-central1.run.app/compras",
         data
       );
 
-      const createdCompra = compraResponse.data; */
+      const createdCompra = compraResponse.data;
 
       return {
         reservation: createdReservation,
         room: roomData,
+        compra: createdCompra,
         review: createdReview,
-        //compra: createdCompra
       };
     } catch (error) {
       console.error("Error en createReservation:", error.message);
