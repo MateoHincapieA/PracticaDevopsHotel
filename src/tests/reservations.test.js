@@ -27,46 +27,46 @@ describe("Reservations API", () => {
     await sequelize.close();
   });
 
-  /*  describe("POST /api/v2/reservations", () => {
-     it("debería crear una reservación válida", async () => {
-       const res = await request(app)
-         .post("/api/v2/reservations")
-         .send({
-           guestName: "Jane Doe",
-           status: "confirmed",
-           roomId: room.id,
-           checkIn: "2025-09-01",
-           checkOut: "2025-09-05",
-         });
-       expect(res.statusCode).toBe(201);
-       expect(res.body.guestName).toBe("Jane Doe");
-       expect(res.body.roomId).toBe(room.id);
-     });
- 
-     it("debería fallar si faltan campos obligatorios", async () => {
-       const res = await request(app)
-         .post("/api/v2/reservations")
-         .send({ guestName: "" });
-       expect(res.statusCode).toBe(400);
-       expect(res.body.errors[0].msg).toBe("Invalid value(s)");
-     });
- 
-     it("debería fallar si checkOut <= checkIn", async () => {
-       const res = await request(app)
-         .post("/api/v2/reservations")
-         .send({
-           guestName: "Invalid Date",
-           roomId: room.id,
-           checkIn: new Date(Date.now() + 24 * 60 * 60 * 1000),
-           checkOut: new Date(),
-         });
-       expect(res.statusCode).toBe(400);
-       expect(res.body.errors[0].msg).toBe("Invalid value(s)");
-     });
-   }); */
+  describe("POST /api/v2/reservations", () => {
+    it("debería crear una reservación válida", async () => {
+      const res = await request(app)
+        .post("/api/v2/reservations")
+        .send({
+          guestName: "Jane Doe",
+          status: "confirmed",
+          roomId: room.id,
+          checkIn: "2025-09-01",
+          checkOut: "2025-09-05",
+        });
+      expect(res.statusCode).toBe(201);
+      expect(res.body.guestName).toBe("Jane Doe");
+      expect(res.body.roomId).toBe(room.id);
+    });
+
+    it("debería fallar si faltan campos obligatorios", async () => {
+      const res = await request(app)
+        .post("/api/v2/reservations")
+        .send({ guestName: "" });
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errors[0].msg).toBe("Invalid value(s)");
+    });
+
+    it("debería fallar si checkOut <= checkIn", async () => {
+      const res = await request(app)
+        .post("/api/v2/reservations")
+        .send({
+          guestName: "Invalid Date",
+          roomId: room.id,
+          checkIn: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          checkOut: new Date(),
+        });
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errors[0].msg).toBe("Invalid value(s)");
+    });
+  });
 
 
-  /* describe("POST /api/v2/reservations - JSON compuesto", () => {
+  describe("POST /api/v2/reservations - JSON compuesto", () => {
     it("debe crear reserva, incluir la room y crear un review", async () => {
       const response = await request(app)
         .post("/api/v2/reservations")
@@ -113,7 +113,7 @@ describe("Reservations API", () => {
       const review = await Review.findByPk(response.body.review.id);
       expect(review).not.toBeNull();
     });
-  }); */
+  });
 
   describe("GET /api/v2/reservations", () => {
     it("debería retornar todas las reservaciones", async () => {

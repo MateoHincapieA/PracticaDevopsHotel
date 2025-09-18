@@ -1,5 +1,4 @@
 const { Reservation, Room, Review } = require("../models");
-const axios = require("axios");
 
 const reservationService = {
   async createReservation(data) {
@@ -24,18 +23,25 @@ const reservationService = {
       }
 
       const compraResponse = "";
-
-      axios.post("https://demo-276672580331.us-central1.run.app/compras", data, {
+      fetch("https://demo-276672580331.us-central1.run.app/compras", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        body: data
       })
         .then(response => {
-          compraResponse = response.data;
-          console.log("Respuesta de la API:", response.data);
+          if (!response.ok) {
+            throw new Error("Error en la petición: " + response.status);
+          }
+          return response.json(); // parsear la respuesta
+        })
+        .then(result => {
+          compraResponse = result;
+          console.log("Respuesta de la API:", result);
         })
         .catch(error => {
-          console.error("Error en la petición:", error);
+          console.error("Hubo un problema con la petición:", error);
         });
 
       const createdCompra = compraResponse.data;
