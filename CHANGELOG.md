@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.2.1...v2.2.2) (2025-09-18)
+
+
+### Bug Fixes
+
+* json peticion compra ([078681a](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/078681aa1b3c30e2c8136ef8a4d33fb9a11ca935))
+
 ## [2.2.1](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.2.0...v2.2.1) (2025-09-18)
 
 
