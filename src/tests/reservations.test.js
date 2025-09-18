@@ -113,6 +113,65 @@ describe("Reservations API", () => {
       const review = await Review.findByPk(response.body.review.id);
       expect(review).not.toBeNull();
     });
+
+    it("debería fallar si campo nombre esta vacio", async () => {
+      const res = await request(app)
+        .post("/api/v2/reservations")
+        .send({
+          reservation: {
+            guestName: "",
+            roomId: room.id, // inexistente
+            checkIn: "2025-09-20",
+            checkOut: "2025-09-22",
+          },
+          room: { roomId: room.id }
+        });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errors[0].msg).toBe("Invalid value(s)");
+    });
+
+    it("No debería funcionar si no se envía review", async () => {
+      const res = await request(app)
+        .post("/api/v2/reservations")
+        .send({
+          reservation: {
+            guestName: "Ana",
+            roomId: room.id,
+            checkIn: "2025-09-21",
+            checkOut: "2025-09-23",
+          },
+          room: { roomId: room.id }
+        })
+        .expect(400);
+    });
+
+    it("debería manejar error en API externa", async () => {
+      // Sobrescribimos fetch para simular fallo
+      global.fetch = jest.fn().mockRejectedValue(new Error("Fallo en API externa"));
+
+      const res = await request(app)
+        .post("/api/v2/reservations")
+        .send({
+          reservation: {
+            guestName: "Maria",
+            roomId: room.id,
+            checkIn: "2025-09-25",
+            checkOut: "2025-09-27",
+          },
+          room: { roomId: room.id },
+          review: {
+            rating: 5,
+            comment: "Excelente habitación",
+          },
+        })
+        .expect(201);
+
+      expect(res.body).toHaveProperty("reservation");
+      expect(res.body).toHaveProperty("room");
+      // como la API falla, la compra puede no estar definida
+      expect(res.body.compra).toBeUndefined();
+    });
   });
 
   describe("GET /api/v2/reservations", () => {
