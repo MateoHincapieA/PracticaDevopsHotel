@@ -22,7 +22,7 @@ const reservationService = {
         createdReview = await Review.create(reviewPayload);
       }
 
-      let compraResponse = "";
+      let compraResponse;
       fetch("https://demo-276672580331.us-central1.run.app/compras", {
         method: "POST",
         headers: {
