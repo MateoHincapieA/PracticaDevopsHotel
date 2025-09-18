@@ -23,31 +23,28 @@ const reservationService = {
       }
 
       let compraResponse;
-      fetch("https://demo-276672580331.us-central1.run.app/compras", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error("Error en la petición: " + response.status);
-          }
-          return response.json(); // parsear la respuesta
-        })
-        .then(result => {
-          compraResponse = result;
-          console.log("Respuesta de la API:", result);
-        })
-        .catch(error => {
-          console.error("Hubo un problema con la petición:", error);
+      try {
+        const response = await fetch("https://demo-276672580331.us-central1.run.app/compras", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
         });
+
+        if (!response.ok) {
+          throw new Error("Error en la petición: " + response.status);
+        }
+
+        compraResponse = await response.json();
+        console.log("Respuesta de la API:", compraResponse);
+      } catch (error) {
+        console.error("Hubo un problema con la petición externa:", error);
+      }
 
       return {
         reservation: createdReservation,
         room: roomData,
-        compra: compraResponse,
+        compra: compraResponse?.compraCreada || null,
+        factura: compraResponse?.respuestaFactura || null,
         review: createdReview,
       };
     } catch (error) {
