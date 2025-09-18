@@ -44,12 +44,10 @@ const reservationService = {
           console.error("Hubo un problema con la petición:", error);
         });
 
-      const createdCompra = compraResponse.data;
-
       return {
         reservation: createdReservation,
         room: roomData,
-        compra: createdCompra,
+        compra: compraResponse,
         review: createdReview,
       };
     } catch (error) {
