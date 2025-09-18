@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.1.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.0.1...v2.1.0) (2025-09-17)
+
+
+### Features
+
+* cloud storage ([cdf2210](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/cdf221055808ea8056ce519602ad018b08ee8f9e))
+
 ## [2.0.1](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.0.0...v2.0.1) (2025-09-17)
 
 
