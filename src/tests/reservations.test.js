@@ -170,7 +170,7 @@ describe("Reservations API", () => {
       expect(res.body).toHaveProperty("reservation");
       expect(res.body).toHaveProperty("room");
       // como la API falla, la compra puede no estar definida
-      expect(res.body.compra).toBeUndefined();
+      expect(res.body.compra).toBeNull();
     });
   });
 
