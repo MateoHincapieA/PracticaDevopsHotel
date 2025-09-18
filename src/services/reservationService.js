@@ -23,10 +23,20 @@ const reservationService = {
         createdReview = await Review.create(reviewPayload);
       }
 
-      const compraResponse = await axios.post(
-        "https://demo-276672580331.us-central1.run.app/compras",
-        data
-      );
+      const compraResponse = "";
+
+      axios.post("https://demo-276672580331.us-central1.run.app/compras", data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => {
+          compraResponse = response.data;
+          console.log("Respuesta de la API:", response.data);
+        })
+        .catch(error => {
+          console.error("Error en la petición:", error);
+        });
 
       const createdCompra = compraResponse.data;
 
