@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.2.0...v2.2.1) (2025-09-18)
+
+
+### Bug Fixes
+
+* cambio de axios a fetch ([111fd6d](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/111fd6dadead89711ed29c0888440708555602bb))
+
 # [2.2.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.1.0...v2.2.0) (2025-09-18)
 
 
