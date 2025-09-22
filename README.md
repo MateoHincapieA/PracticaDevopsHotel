@@ -7,7 +7,7 @@ Este proyecto corresponde a la **versión 1.0.0** (finalizada el **13/09/2025**)
 
 # Arquitectura del Proyecto
 
-![Arquitectura](./docs/arquitectura.jpg)
+![Arquitectura](./docs/Arquitectura.jpg)
 
 ---
 
