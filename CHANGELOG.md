@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.4](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.2.3...v2.2.4) (2025-09-18)
+
+
+### Bug Fixes
+
+* cambio en la peticion a API externa ([4c42c09](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/4c42c09e733dc6430276ce774f7ec2a5699bd9bc))
+
 ## [2.2.3](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.2.2...v2.2.3) (2025-09-18)
 
 
