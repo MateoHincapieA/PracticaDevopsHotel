@@ -1,3 +1,9 @@
 node_modules/
 .env
 coverage/
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+.terraform.lock.hcl
