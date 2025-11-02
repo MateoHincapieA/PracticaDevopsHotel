@@ -20,3 +20,21 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "db_name" {
+  description = "Nombre de la base de datos"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_user" {
+  description = "Nombre de usuario de la base de datos"
+  type        = string
+  sensitive   = true
+}
+
+variable "ssh_private_key_path" {
+  description = "Ruta a clave privada para conectar al bastion"
+  type        = string
+  sensitive   = true
+}
