@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+export DEBIAN_FRONTEND=noninteractive
+
+# ========= Parámetros desde Terraform =========
+DB_NAME="${db_name}"
+DB_USER="${db_user}"
+DB_PASS="${db_password}"
+BASTION_CIDR="${bastion_cidr}"   # ej: 10.10.0.0/24
+# =============================================
+
+log() { echo "[db-init] $*"; }
+
+retry() {
+  local tries="$1"; shift
+  local n=0
+  until [ $n -ge "$tries" ]; do
+    if "$@"; then return 0; fi
+    n=$((n+1))
+    log "Intento $n/$tries falló. Reintentando en 5s..."
+    sleep 5
+  done
+  return 1
+}
+
+# 0) Salir si ya quedó inicializado antes
+if [ -f /var/log/db-setup.ok ]; then
+  log "Ya inicializado anteriormente. Saliendo."
+  exit 0
+fi
+
+# 1) Verificar conectividad de salida (Cloud NAT) y actualizar índices
+retry 5 bash -lc 'getent hosts deb.debian.org >/dev/null 2>&1 || ping -c1 8.8.8.8 >/dev/null 2>&1'
+retry 5 apt-get update -y
+
+# 2) Instalar PostgreSQL (servidor). Paquete meta y versión explícita como respaldo.
+retry 5 apt-get install -y postgresql postgresql-contrib || true
+retry 5 apt-get install -y postgresql-15 postgresql-client-15 postgresql-contrib || true
+
+# 3) Detectar versión y rutas de config
+# Detectar versión y ruta de configuración
+PG_VER="$(psql -V | awk '{print $3}' | cut -d. -f1,2 || true)"
+PG_CONF="$(sudo find /etc/postgresql -type f -name postgresql.conf 2>/dev/null | head -n1 || true)"
+HBA_CONF="$(dirname "$PG_CONF")/pg_hba.conf"
+
+if [ -z "$PG_CONF" ] || [ ! -f "$PG_CONF" ]; then
+  echo "[WARN] No se encontró postgresql.conf en /etc/postgresql/* — verificando /etc"
+  PG_CONF="$(sudo find /etc -type f -name postgresql.conf 2>/dev/null | head -n1 || true)"
+  HBA_CONF="$(dirname "$PG_CONF")/pg_hba.conf"
+fi
+
+echo "[INFO] Archivo de configuración detectado: $PG_CONF"
+echo "[INFO] Archivo pg_hba detectado: $HBA_CONF"
+
+
+# 4) Asegurar escucha en todas las interfaces
+if [ -f "$PG_CONF" ]; then
+  sed -i "s/^#*listen_addresses.*/listen_addresses = '*'/" "$PG_CONF"
+fi
+
+# 5) Permitir acceso desde la subred del bastion
+if [ -f "$HBA_CONF" ] && ! grep -q "$BASTION_CIDR" "$HBA_CONF"; then
+  {
+    echo "host    all        all        $BASTION_CIDR   md5"
+    echo "host    $DB_NAME   $DB_USER   $BASTION_CIDR   md5"
+  } >> "$HBA_CONF"
+fi
+
+# 6) Habilitar/arrancar el servicio (nombre genérico o por instancia)
+systemctl enable --now postgresql 2>/dev/null || true
+systemctl enable --now "postgresql@$${PG_VER}-main" 2>/dev/null || true
+systemctl restart postgresql 2>/dev/null || systemctl restart "postgresql@$${PG_VER}-main" 2>/dev/null || true
+
+# 7) Crear rol y DB si no existen (idempotente)
+# Crear o actualizar el rol
+sudo -u postgres psql -v ON_ERROR_STOP=1 <<SQL
+DO
+\$do\$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${db_user}') THEN
+    EXECUTE format('CREATE ROLE %I LOGIN PASSWORD %L', '${db_user}', '${db_password}');
+  ELSE
+    EXECUTE format('ALTER ROLE %I LOGIN PASSWORD %L', '${db_user}', '${db_password}');
+  END IF;
+END
+\$do\$;
+SQL
+
+# Crear la base de datos (fuera de transacción)
+sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE DATABASE ${db_name} OWNER ${db_user};" || true
+
+# Crear BD si no existe y asignar owner
+sudo -u postgres psql -v ON_ERROR_STOP=1 <<SQL
+DO
+\$do\$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = '$DB_NAME') THEN
+    EXECUTE format('CREATE DATABASE %I OWNER %I', '$DB_NAME', '$DB_USER');
+  END IF;
+END
+\$do\$;
+SQL
+
+# 8) Esperar puerto 5432 arriba (hasta 30s)
+for i in $(seq 1 10); do
+  if ss -ltn | grep -q ":5432 "; then break; fi
+  log "Esperando PostgreSQL en 5432 ($i/10)..."
+  sleep 3
+done
+
+sudo -u postgres psql -c "\l" > /var/log/db-setup.log 2>&1 || true
+touch /var/log/db-setup.ok
+log "DB init OK: $(date)"
