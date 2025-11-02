@@ -1,5 +1,15 @@
 # Changelog
 
+# [2.4.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.3.0...v2.4.0) (2025-11-02)
+
+
+### Features
+
+* Creacion de vm para la base de datos ([f0663af](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/f0663afb843068cf339a028d0e0dc17a81541ff7))
+* main terraform y outputs ([281281a](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/281281a3e4c6e52c855ce0a1760020acd88d064e))
+* readme terraform ([8700319](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/8700319c68bb72c4811380fa73cd324417b21325))
+* scripts base de datos ([30d10d0](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/30d10d063364f3d03a097e41eb597c73065f22e1))
+
 # [2.3.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.2.4...v2.3.0) (2025-11-02)
 
 
