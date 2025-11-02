@@ -1,5 +1,18 @@
 # Changelog
 
+# [2.3.0](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.2.4...v2.3.0) (2025-11-02)
+
+
+### Bug Fixes
+
+* Corrección .gitIgnore ([3693141](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/36931417785105c0bdfae2c16503e73b7762a6c2))
+
+
+### Features
+
+* Crear bastion de ingreso ([eeb28ac](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/eeb28acd139aa8c37edb7f0f17626e884306bbb5))
+* crear VPC ([8ee9bbb](https://github.com/MateoHincapieA/PracticaDevopsHotel/commit/8ee9bbba728002454b0b6ff1bbc018e84b71e320))
+
 ## [2.2.4](https://github.com/MateoHincapieA/PracticaDevopsHotel/compare/v2.2.3...v2.2.4) (2025-09-18)
 
 
